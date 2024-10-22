@@ -1,13 +1,13 @@
 {
   "name": "real-estate-project",
   "version": "1.0.0",
-  "description": "Website for Real Estate buying,selling and renting ",
+  "description": "Website for Real Estate buying, selling, and renting",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": " nodemon Backend/index.js",
-    "start": "node Backend/index.js",
+    "dev": "nodemon index.js",                      
+    "start": "node index.js",                       
     "build": "npm install && npm install --prefix client && npm run build --prefix client"
   },
   "author": "Krish Panchal",
