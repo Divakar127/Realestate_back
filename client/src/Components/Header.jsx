@@ -7,58 +7,45 @@ import { AiOutlineMenu, AiOutlineCloseCircle } from "react-icons/ai";
 import { useSelector } from "react-redux";
 
 const Header = () => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const [toggle, setToggle] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSubmit = (e)=>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const urlParams = new URLSearchParams(window.location.search); // inbuilt javascript class for accessing the query parameters in the url, window .location.search is used to access the part of the url after the ?
-    urlParams.set('searchTerm',searchTerm);
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("searchTerm", searchTerm);
     const searchQuery = urlParams.toString();
-    Navigate(`/search?${searchQuery}`);
+    navigate(`/search?${searchQuery}`);
+  };
 
-  }
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl  = urlParams.get('searchTerm'); // onsubmit we set the urlparams to searchterm now we are getting it
-    if(searchTermFromUrl){
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    if (searchTermFromUrl) {
       setSearchTerm(searchTermFromUrl);
     }
+  }, [location.search]);
 
-  },[location.search])
   return (
-    <header className="bg-slate-300 h-[90px] flex justify-between mx-auto max-w-full items-center ">
-      <div className="p-2">
+    <header className="bg-white shadow-lg h-[80px] flex justify-between items-center px-5 md:px-10 lg:px-20">
+      {/* Logo */}
+      <div className="flex items-center">
         <Link to="/">
-          <img src={logo} alt="" className="h-[70px] " />
+          <img src={logo} alt="Logo" className="h-12 w-auto object-contain" />
         </Link>
       </div>
-      {toggle ? (
-        <div className="mr-3" >
-          <AiOutlineCloseCircle
-            onClick={() => setToggle(!toggle)}
-            className="text-slate-800 block md:hidden text-3xl "
-          />
-        </div>
-      ) : (
-        <div className="mr-3">
-          <AiOutlineMenu
-            onClick={() => setToggle(!toggle)}
-            className="text-slate-800 block md:hidden text-3xl"
-          />
-        </div>
-      )}
 
-      <ul className="md:flex hidden gap-5 text-slate-700">
-        <li className="hover:underline text-bold p-3">
+      {/* Desktop Menu */}
+      <ul className="hidden md:flex gap-8 items-center text-gray-700">
+        <li className="hover:underline hover:text-blue-600 font-medium">
           <Link to="/">Home</Link>
         </li>
-        <li className="hover:underline text-bold p-3">
+        <li className="hover:underline hover:text-blue-600 font-medium">
           <Link to="/about">About</Link>
         </li>
-        <li className="hover:underline text-bold p-3">
+        <li className="hover:underline hover:text-blue-600 font-medium">
           {currentUser ? (
             <Link to="/profile">Profile</Link>
           ) : (
@@ -67,58 +54,78 @@ const Header = () => {
         </li>
       </ul>
 
+      {/* Mobile Menu Toggle */}
+      <div className="md:hidden">
+        {toggle ? (
+          <AiOutlineCloseCircle
+            onClick={() => setToggle(!toggle)}
+            className="text-3xl text-gray-700 cursor-pointer"
+          />
+        ) : (
+          <AiOutlineMenu
+            onClick={() => setToggle(!toggle)}
+            className="text-3xl text-gray-700 cursor-pointer"
+          />
+        )}
+      </div>
+
+      {/* Mobile Menu */}
       <ul
-        className={`md:hidden fixed duration-500 w-full h-screen top-24 text-white bg-black p-4 ${
-          toggle ? "left-[0]" : "left-[-100%]"
-        }`}
+        className={`fixed top-0 left-0 h-full w-3/4 bg-gray-900 text-white p-10 transition-transform duration-300 ${
+          toggle ? "translate-x-0" : "-translate-x-full"
+        } md:hidden`}
       >
-        <li className="p-3">
-          <Link to="/">Home</Link>
+        <li className="mb-6">
+          <Link to="/" className="text-xl" onClick={() => setToggle(false)}>
+            Home
+          </Link>
         </li>
-        <li className="p-3">
-          <Link to="/about">About</Link>
+        <li className="mb-6">
+          <Link to="/about" className="text-xl" onClick={() => setToggle(false)}>
+            About
+          </Link>
         </li>
-        <li className="p-3">
-          <Link to="/sign-up">Sign In</Link>
+        <li className="mb-6">
+          <Link to="/sign-in" className="text-xl" onClick={() => setToggle(false)}>
+            Sign In
+          </Link>
         </li>
-        <li className="p-3">
-          <Link to="/profile">Profile</Link>
+        <li className="mb-6">
+          <Link to="/profile" className="text-xl" onClick={() => setToggle(false)}>
+            Profile
+          </Link>
         </li>
       </ul>
 
-   
-        <div className=" md:flex justify-between gap-5 m-3 p-3 items-center hidden">
-          <form
-            action=""
-            className="bg-slate-100 rounded-xl flex items-center "
-            onSubmit={handleSubmit}
-          >
-            <input
-              type="text"
-              placeholder="Search..."
-              className=" border-black p-2 bg-transparent"
-              default value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+      {/* Search and Profile */}
+      <div className="hidden md:flex items-center gap-6">
+        <form
+          className="relative bg-gray-100 rounded-full shadow-inner flex items-center"
+          onSubmit={handleSubmit}
+        >
+          <input
+            type="text"
+            placeholder="Search..."
+            className="p-2 pl-4 w-full bg-transparent text-gray-700 focus:outline-none rounded-full"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button type="submit" className="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition">
+            <FaSearch />
+          </button>
+        </form>
+        <Link to="/profile">
+          {currentUser?.avatar ? (
+            <img
+              src={currentUser.avatar}
+              alt="User Avatar"
+              className="h-10 w-10 rounded-full object-cover shadow-lg"
             />
-            <span className="p-2">
-              <button>
-                <FaSearch className="bg-transparent focus:outline-none" />
-              </button>
-            </span>
-          </form>
-          {/* <HiOutlineUserCircle className="md:text-4xl" /> */}
-          <Link to="/profile">
-            {currentUser?.avatar ? (
-              <img
-                src={currentUser.avatar}
-                alt=""
-                className="rounded-full h-9 w-9"
-              />
-            ) : (
-              <HiOutlineUserCircle className="md:text-4xl" />
-            )}
-          </Link>
-        </div>
+          ) : (
+            <HiOutlineUserCircle className="text-3xl text-gray-700" />
+          )}
+        </Link>
+      </div>
     </header>
   );
 };
