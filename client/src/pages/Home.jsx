@@ -70,7 +70,7 @@ const Home = () => {
 
       {/* Swiper for Offer Listings */}
       <div className="max-w-6xl mx-auto p-4">
-        <Swiper navigation pagination={{ clickable: true }} className="my-10">
+        <Swiper navigation pagination={{ clickable: true }} spaceBetween={20} className="my-10">
           {offerListings.map((listing) => (
             <SwiperSlide key={listing._id}>
               <div
